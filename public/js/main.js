@@ -70,8 +70,13 @@ $(function initializeMap() {
                 var curDay = day.number === 1 ? 'current-day' : '';
                 var selected = day.number === 1 ? 'selected' : '';
 
-                var hotel = day.hotel !== null ? `<li class=itinerary-item> ${day.hotel.name} <button data-action="deleteFromTrip" class="btn btn-xs btn-danger remove btn-circle">x</button></li>` : '';
+                var hotel = day.hotel ? $(`<li class=itinerary-item> ${day.hotel.name} <button data-action="deleteFromTrip" class="btn btn-xs btn-danger remove btn-circle">x</button></li>`) : '';
                 // Draw a marker on the map
+                  if(day.hotel){
+
+                  // var hotelLi = $('section[data-index='+day.number+'] .trip-day-hotels li');
+                    hotel.marker = drawMarker('hotel', day.hotel.place.location);
+                  }
                 
                
                 $("#day-add").before('<button class="btn btn-circle day-btn ' + curDay + '" data-day="' + day.number + '">' + day.number + '</button>');
@@ -79,7 +84,6 @@ $(function initializeMap() {
                   <div>
                     <h4>My Hotel</h4>
                     <ul class="list-group trip-day-hotels">
-                      ${hotel}
                     </ul>
                   </div>
                   <div>
@@ -93,9 +97,10 @@ $(function initializeMap() {
                     </ul>
                   </div>
                 </section>`);
-                var hotelLi = $('section[data-index='+day.number+'] .trip-day-hotels li');
-                hotelLi.marker = drawMarker('hotel', day.hotel.place.location);
-                if(day.number !== 1) hotelLi.marker.setMap(null);
+
+                  $('.trip-day-hotels').append(hotel);
+                  if(day.number !== 1) hotel.marker.setMap(null);
+                
             });
         })
         .fail(function(error) {
@@ -199,7 +204,8 @@ $(function initializeMap() {
         $('.day')
             .removeClass('selected')
             .find('li').each(function(i, li) {
-                li.marker.setMap(null)
+                console.log('line 205',li.marker)
+                li.marker.setMap(null);
             })
 
         // Select the day for the button that was clicked
